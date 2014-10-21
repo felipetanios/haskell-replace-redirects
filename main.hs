@@ -8,7 +8,10 @@ import Network.Stream (ConnError)
 type ListOfMatches = [[String]]
 
 main :: IO ()
-main = getContents >>= transformBody >>= putStr
+main = do
+  contents <- getContents
+  s <- transformBody contents
+  putStr s
 
 transformBody :: String -> IO String
 transformBody body = do
