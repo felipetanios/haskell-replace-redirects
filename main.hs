@@ -14,22 +14,21 @@ transformBody :: String -> String
 transformBody = (intercalate "\n") . transformLines . lines
 
 transformLines :: [String] -> [String]
-transformLines [] = []
-transformLines (line:xs) = transformed:(transformLines xs)
-  where
-    transformed = transformLine line (matchAgainstUrlRegex line)
+transformLines = map transformLine
 
 -- Given a line *without* a URL, return the line unchanged.
 -- Given a line *with* a URL, return just the URL (for now)
 -- It knows if it has a URL because of the second argument. If it's empty,
 -- there's no URL.
-transformLine :: String -> ListOfMatches -> String
-transformLine original [] = original
-transformLine original (x:xs) = url
-  where
-    fullLine = x !! 0
-    everythingButUrl = x !! 1
-    url = x !! 2
+transformLine :: String -> String
+transformLine original
+  | matchAgainstUrlRegex original == [] = original
+  | otherwise = url
+    where
+      fullLine = match !! 0
+      everythingButUrl = match !! 1
+      url = match !! 2
+      match = head $ matchAgainstUrlRegex original
 
 -- When it matches:
 -- matchAgainstUrlRegex "hello: http://g.co"
