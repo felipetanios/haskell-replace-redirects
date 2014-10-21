@@ -17,7 +17,7 @@ transformLines (line:xs) = transformed:(transformLines xs)
   where
     transformed = transformLine line (matchAgainstUrlRegex line)
 
--- Given a line *without* a URL, return the line unchanged
+-- Given a line *without* a URL, return the line unchanged.
 -- Given a line *with* a URL, return just the URL (for now)
 -- It knows if it has a URL because of the second argument. If it's empty,
 -- there's no URL.
