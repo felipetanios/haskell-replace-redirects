@@ -35,7 +35,7 @@ transformLine original
 
 -- When it matches:
 -- matchAgainstUrlRegex "hello: http://g.co"
--- [["hello: http://g.co","hello: ","http://g.co"]]
+-- [["hello: http://g.co", "hello: ", "http://g.co"]]
 --
 -- If it doesn't match, it returns an empty list.
 matchAgainstUrlRegex :: String -> ListOfMatches
@@ -45,7 +45,6 @@ findUnshortenedUrl :: String -> IO String
 findUnshortenedUrl shortenedUrl = do
   response <- simpleHTTP (getRequest shortenedUrl)
   let header = fmap (findHeader HdrLocation) response
-  case header of
-    Left _ -> return shortenedUrl
-    Right Nothing -> return shortenedUrl
-    Right (Just longUrl) -> return longUrl
+  return $ case header of
+    Right (Just longUrl) -> longUrl
+    _ -> shortenedUrl
