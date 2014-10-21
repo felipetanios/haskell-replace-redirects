@@ -8,22 +8,25 @@ import Network.Stream (ConnError)
 type ListOfMatches = [[String]]
 
 main :: IO ()
-main = interact transformBody
+main = getContents >>= transformBody >>= putStr
 
-transformBody :: String -> String
-transformBody = (intercalate "\n") . transformLines . lines
+transformBody :: String -> IO String
+transformBody body = do
+  transformed <- transformLines $ lines body
+  return $ (intercalate "\n" transformed) ++ "\n"
 
-transformLines :: [String] -> [String]
-transformLines = map transformLine
+transformLines :: [String] -> IO [String]
+transformLines body = sequence $ map transformLine body
 
 -- Given a line *without* a URL, return the line unchanged.
--- Given a line *with* a URL, return just the URL (for now)
--- It knows if it has a URL because of the second argument. If it's empty,
--- there's no URL.
-transformLine :: String -> String
+-- Given a line *with* a URL, change the possibly-shortened URL to its longer
+-- version.
+transformLine :: String -> IO String
 transformLine original
-  | matchAgainstUrlRegex original == [] = original
-  | otherwise = url
+  | matchAgainstUrlRegex original == [] = return original
+  | otherwise = do
+      longUrl <- findUnshortenedUrl url
+      return $ everythingButUrl ++ longUrl
     where
       fullLine = match !! 0
       everythingButUrl = match !! 1
@@ -38,9 +41,11 @@ transformLine original
 matchAgainstUrlRegex :: String -> ListOfMatches
 matchAgainstUrlRegex = (=~ "(.+)(http://.*)$")
 
-findUnshortenedUrl :: String -> IO (Either Network.Stream.ConnError String)
+findUnshortenedUrl :: String -> IO String
 findUnshortenedUrl shortenedUrl = do
   response <- simpleHTTP (getRequest shortenedUrl)
-  let header = fmap (retrieveHeaders HdrLocation) response
-  let headerValue = fmap (hdrValue . head) header
-  return headerValue
+  let header = fmap (findHeader HdrLocation) response
+  case header of
+    Left _ -> return shortenedUrl
+    Right Nothing -> return shortenedUrl
+    Right (Just longUrl) -> return longUrl
