@@ -9,11 +9,11 @@ main :: IO ()
 main = interact transformBody
 
 transformBody :: String -> String
-transformBody = (intercalate "\n") . parsedOutput . lines
+transformBody = (intercalate "\n") . transformLines . lines
 
-parsedOutput :: [String] -> [String]
-parsedOutput [] = []
-parsedOutput (line:xs) = transformed:(parsedOutput xs)
+transformLines :: [String] -> [String]
+transformLines [] = []
+transformLines (line:xs) = transformed:(transformLines xs)
   where
     transformed = transformLine line (matchAgainstUrlRegex line)
 
