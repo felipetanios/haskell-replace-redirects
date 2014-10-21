@@ -16,7 +16,7 @@ transformBody body = do
   return $ unlines transformed
 
 transformLines :: [String] -> IO [String]
-transformLines body = mapM transformLine body
+transformLines = mapM transformLine
 
 -- Given a line *without* a URL, return the line unchanged.
 -- Given a line *with* a URL, change the possibly-shortened URL to its longer
