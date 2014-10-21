@@ -30,7 +30,6 @@ transformLine original
       longUrl <- findUnshortenedUrl url
       return $ everythingButUrl ++ longUrl
     where
-      fullLine = match !! 0
       everythingButUrl = match !! 1
       url = match !! 2
       match = head $ matchAgainstUrlRegex original
