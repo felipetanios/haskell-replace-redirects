@@ -8,7 +8,6 @@ if ! command -v runhaskell &>/dev/null; then
   exit 1
 fi
 
-cabal install regex-pcre
-cabal install HTTP
+cabal install regex-pcre HTTP
 
 cat README.md
