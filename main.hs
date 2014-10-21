@@ -7,8 +7,10 @@ import Network.HTTP (simpleHTTP, getRequest, findHeader, HeaderName(HdrLocation)
 type ListOfMatches = [[String]]
 
 main :: IO ()
--- -- `a >>= b` takes the result of a and passes it to b, ~monadically~
-main = getContents >>= transformBody >>= putStr
+-- `a >>= b` takes the result of a and passes it to b, ~monadically~
+-- `=<<` does the same thing, but in reverse order.
+-- So `=<<` flows right to left, and `>>=` flows left to right
+main = putStr =<< transformBody =<< getContents
 
 transformBody :: String -> IO String
 transformBody body = do
