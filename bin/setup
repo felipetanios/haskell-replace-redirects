@@ -9,5 +9,6 @@ if ! command -v runhaskell &>/dev/null; then
 fi
 
 cabal install regex-pcre
+cabal install HTTP
 
 cat README.md

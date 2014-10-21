@@ -2,6 +2,7 @@ module Main where
 
 import Text.Regex.PCRE ((=~))
 import Data.List (intercalate)
+import Network.HTTP
 
 type ListOfMatches = [[String]]
 
@@ -36,3 +37,9 @@ transformLine original (x:xs) = url
 -- If it doesn't match, it returns an empty list.
 matchAgainstUrlRegex :: String -> ListOfMatches
 matchAgainstUrlRegex = (=~ "(.+)(http://.*)$")
+
+
+-- Playing with Network.HTTP
+-- response <- simpleHTTP (getRequest "http://rdd.me")
+-- header = fmap (retrieveHeaders HdrLocation) response -- Array of 1 Header
+-- fmap (hdrValue . head) header -- Right "http://www.readability.com/shorten"
