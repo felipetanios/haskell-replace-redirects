@@ -3,6 +3,7 @@ module Main where
 import Text.Regex.PCRE ((=~))
 import Data.List (intercalate)
 import Network.HTTP
+import Network.Stream (ConnError)
 
 type ListOfMatches = [[String]]
 
@@ -38,8 +39,9 @@ transformLine original (x:xs) = url
 matchAgainstUrlRegex :: String -> ListOfMatches
 matchAgainstUrlRegex = (=~ "(.+)(http://.*)$")
 
-
--- Playing with Network.HTTP
--- response <- simpleHTTP (getRequest "http://rdd.me")
--- header = fmap (retrieveHeaders HdrLocation) response -- Array of 1 Header
--- fmap (hdrValue . head) header -- Right "http://www.readability.com/shorten"
+findUnshortenedUrl :: String -> IO (Either Network.Stream.ConnError String)
+findUnshortenedUrl shortenedUrl = do
+  response <- simpleHTTP (getRequest shortenedUrl)
+  let header = fmap (retrieveHeaders HdrLocation) response
+  let headerValue = fmap (hdrValue . head) header
+  return headerValue
