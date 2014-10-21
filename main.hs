@@ -44,6 +44,9 @@ findUnshortenedUrl :: String -> IO String
 findUnshortenedUrl shortenedUrl = do
   response <- simpleHTTP (getRequest shortenedUrl)
   let header = fmap (findHeader HdrLocation) response
-  return $ case header of
-    Right (Just longUrl) -> longUrl
-    _ -> shortenedUrl
+  return $ unwrapWithFallback header shortenedUrl
+
+unwrapWithFallback :: Either b (Maybe a) -> a -> a
+unwrapWithFallback wrapped fallback = case wrapped of
+  Right (Just x) -> x
+  _ -> fallback
