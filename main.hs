@@ -29,10 +29,10 @@ transformLine original (x:xs) = url
     everythingButUrl = x !! 1
     url = x !! 2
 
--- Matching:
+-- When it matches:
 -- matchAgainstUrlRegex "hello: http://g.co"
 -- [["hello: http://g.co","hello: ","http://g.co"]]
 --
--- Non-matching returns an empty list
+-- If it doesn't match, it returns an empty list.
 matchAgainstUrlRegex :: String -> ListOfMatches
 matchAgainstUrlRegex = (=~ "(.+)(http://.*)$")
