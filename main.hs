@@ -15,7 +15,7 @@ main = do
 transformBody :: String -> IO String
 transformBody body = do
   transformed <- transformLines $ lines body
-  return $ (intercalate "\n" transformed) ++ "\n"
+  return $ unlines transformed
 
 transformLines :: [String] -> IO [String]
 transformLines body = sequence $ map transformLine body
