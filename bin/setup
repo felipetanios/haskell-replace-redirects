@@ -8,4 +8,6 @@ if ! command -v runhaskell &>/dev/null; then
   exit 1
 fi
 
+cabal install regex-pcre
+
 cat README.md
