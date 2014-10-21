@@ -2,8 +2,7 @@ module Main where
 
 import Text.Regex.PCRE ((=~))
 import Data.List (intercalate)
-import Network.HTTP
-import Network.Stream (ConnError)
+import Network.HTTP (simpleHTTP, getRequest, findHeader, HeaderName(HdrLocation))
 
 type ListOfMatches = [[String]]
 
