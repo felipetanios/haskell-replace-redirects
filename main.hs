@@ -24,15 +24,13 @@ transformLines = mapM transformLine
 -- Given a line *with* a URL, change the possibly-shortened URL to its longer
 -- version.
 transformLine :: String -> IO String
-transformLine original
-  | matchAgainstUrlRegex original == [] = return original
-  | otherwise = do
-      longUrl <- findUnshortenedUrl url
-      return $ everythingButUrl ++ longUrl
-    where
-      everythingButUrl = match !! 1
-      url = match !! 2
-      match = head $ matchAgainstUrlRegex original
+transformLine original = transformMatch original $ matchAgainstUrlRegex original
+
+transformMatch :: String -> ListOfMatches -> IO String
+transformMatch _ [_:everythingButUrl:url:[]] = do
+  longUrl <- findUnshortenedUrl url
+  return $ everythingButUrl ++ longUrl
+transformMatch original _ = return original
 
 -- When it matches:
 -- matchAgainstUrlRegex "hello: http://g.co"
