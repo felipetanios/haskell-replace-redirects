@@ -2,6 +2,7 @@ module Main where
 
 import Text.Regex.PCRE ((=~))
 import Data.List (intercalate)
+import Data.Maybe (fromMaybe)
 import Network.HTTP (simpleHTTP, getRequest, findHeader, HeaderName(HdrLocation))
 
 type ListOfMatches = [[String]]
@@ -42,9 +43,7 @@ findUnshortenedUrl :: String -> IO String
 findUnshortenedUrl shortenedUrl = do
   response <- simpleHTTP (getRequest shortenedUrl)
   let header = fmap (findHeader HdrLocation) response
-  return $ unwrapWithFallback header shortenedUrl
+  return $ unwrapWithFallback shortenedUrl header
 
-unwrapWithFallback :: Either b (Maybe a) -> a -> a
-unwrapWithFallback wrapped fallback = case wrapped of
-  Right (Just x) -> x
-  _ -> fallback
+unwrapWithFallback :: a -> Either b (Maybe a) -> a
+unwrapWithFallback fallback = either (const fallback) (fromMaybe fallback)
