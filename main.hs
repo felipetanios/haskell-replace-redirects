@@ -13,9 +13,7 @@ main :: IO ()
 main = putStr =<< transformBody =<< getContents
 
 transformBody :: String -> IO String
-transformBody body = do
-  transformed <- transformLines $ lines body
-  return $ unlines transformed
+transformBody = (fmap unlines) . transformLines . lines
 
 transformLines :: [String] -> IO [String]
 transformLines = mapM transformLine
